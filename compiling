@@ -1,0 +1,19 @@
+Requires Qt 4 >= 4.6
+
+1. Create a project file by executing
+
+$ qmake -project
+
+2. Create a Makefile using
+
+$ qmake
+
+3. Compile using make
+
+$ make
+
+Debugging
+
+Add the following line to the graphbag.pro file to compile in debug mode
+
+CONFIG += debug
