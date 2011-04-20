@@ -89,6 +89,42 @@ private:
 
 };
 
+class GraphCanvas : public QGraphicsRectItem
+{
+
+public:
+
+  GraphCanvas( double x=-100, double y=-100, double w=200, double h=200 )
+    : QGraphicsRectItem( x, y, w, h )
+  {
+    setBrush( QColor(173, 241, 174, 200) );
+    
+
+  }
+
+  void mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
+  {
+
+    QPointF pos(mouseEvent->pos());
+    QPointF scene_pos( mouseEvent->scenePos());
+      
+    qDebug() << "Press in GraphCanvas.";
+    qDebug() <<"\tpos: " << pos;
+    qDebug() <<"\tscene_pos: "<< scene_pos;
+    qDebug() <<"\tItem currently at pos: " << this->pos();
+    qDebug() <<"\tItem currently at scene_pos: "<< scenePos();
+
+    qDebug();
+    
+    QGraphicsRectItem::mousePressEvent( mouseEvent );  
+
+  }
+
+
+
+
+};
+
 class GraphScene : public  QGraphicsScene
 {
   
@@ -96,7 +132,13 @@ public:
 
   GraphScene( QGraphicsView *parent )
     : QGraphicsScene( parent )
-  {}
+  {
+    
+    gc = new GraphCanvas();
+
+    addItem( gc );
+    
+  }
 
   void mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
   {
@@ -124,6 +166,8 @@ public:
     }
 
   }
+
+  GraphCanvas * gc;
 
 };
 
