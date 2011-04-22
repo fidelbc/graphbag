@@ -28,7 +28,8 @@ class Vertex : public QGraphicsEllipseItem
 public:
 
   Vertex( double x, double y, double r=20.0, QGraphicsItem * parent=0 )
-    : QGraphicsEllipseItem( x-r/2, y-r/2, r, r, parent ), radius( r )
+    : QGraphicsEllipseItem( x-r/2, y-r/2, r, r, parent ), radius( r ),
+      label(this)
   {
 
     //setPos( x, y );
@@ -53,6 +54,9 @@ public:
     //gradient.setColorAt(0, QColor::fromRgbF(0, 0, 0, 1));
     QBrush brush( Qt::darkGreen );
     setBrush( brush );
+    
+    //vx_number++;
+    //label.setPlainText( QString( "%1" ).arg( vx_number) );
 
   }
 
@@ -70,7 +74,7 @@ public:
     qDebug() <<"\tItem currently at scene_pos: "<< this->scenePos();
 
     qDebug();
-    
+
     QGraphicsEllipseItem::mousePressEvent( mouseEvent );  
 
   }
@@ -107,9 +111,13 @@ private:
   double radius;
   QColor pen_color;
   QColor brush_color;
-
+  QGraphicsTextItem label;
+  static int vx_number;
+  
 
 };
+
+int Vertex::vx_number = 0;
 
 class GraphCanvas : public QGraphicsRectItem
 {
@@ -137,7 +145,22 @@ public:
     double x= event->pos().x();
     double y= event->pos().y();
 
-    text_stream << "(" << x << "," << y << ")";
+    text_stream << "pos:(" << x << "," << y << ")"<<endl;
+
+    x= event->scenePos().x();
+    y= event->scenePos().y();
+
+    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
+
+    x= this->pos().x();
+    y= this->pos().y();
+
+    text_stream << "pos:(" << x << "," << y << ")"<<endl;
+
+    x= this->scenePos().x();
+    y= this->scenePos().y();
+
+    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
       
     label.setPlainText( temp );
 
@@ -151,7 +174,22 @@ public:
     double x= event->pos().x();
     double y= event->pos().y();
 
-    text_stream << "(" << x << "," << y << ")";
+    text_stream << "pos:(" << x << "," << y << ")"<<endl;
+
+    x= event->scenePos().x();
+    y= event->scenePos().y();
+
+    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
+
+    x= this->pos().x();
+    y= this->pos().y();
+
+    text_stream << "pos:(" << x << "," << y << ")"<<endl;
+
+    x= this->scenePos().x();
+    y= this->scenePos().y();
+
+    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
       
     label.setPlainText( temp );
 
@@ -166,7 +204,22 @@ public:
     double x= event->pos().x();
     double y= event->pos().y();
 
-    text_stream << "(" << x << "," << y << ")";
+    text_stream << "pos:(" << x << "," << y << ")"<<endl;
+
+    x= event->scenePos().x();
+    y= event->scenePos().y();
+
+    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
+
+    x= this->pos().x();
+    y= this->pos().y();
+
+    text_stream << "pos:(" << x << "," << y << ")"<<endl;
+
+    x= this->scenePos().x();
+    y= this->scenePos().y();
+
+    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
       
     label.setPlainText( temp );
 
@@ -203,6 +256,42 @@ public:
 
   }
 
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget ){
+    QGraphicsRectItem::paint( painter, option, widget );
+
+    QPen old_pen( pen() );
+
+    QPen new_pen(Qt::SolidLine);
+    QColor new_color(Qt::lightGray);
+    new_color.setAlpha( 100 );
+    new_pen.setColor( new_color );
+    new_pen.setWidth( 2 );
+
+    setPen( new_pen );
+    
+    QRectF r(rect());
+    
+    int x= (int)r.x();
+    int y= (int)r.y();
+    int height= (int)r.height();
+    int width= (int)r.width();
+      
+
+    for( int h= 0; h < width; h+=10 )
+      painter->drawLine( x+h, y, x+h, y+height);
+
+    for( int v= 0; v < height; v+=10 )
+      painter->drawLine( x, y+v, x+width, y+v);
+
+    painter->drawRect(-5,-5,10,10);
+
+
+    //setPen( old_pen );
+
+  }
+
+private:
+
   QGraphicsTextItem label;
 
 
@@ -217,9 +306,9 @@ public:
     : QGraphicsScene( parent )
   {
     
-    gc = new GraphCanvas(-200, -200, 300, 300 );
+    gc = new GraphCanvas(-200, -200, 500, 500 );
 
-    gc->setPos( -50, -50 );
+    gc->setPos( -100, -100 );
 
     addItem( gc );
     
@@ -267,7 +356,7 @@ public:
 
 
     QPoint pos(event->pos());
-
+    qDebug() << "-------------------------------------------------------------------------";
     qDebug() << "Press in View.";
     qDebug() << "\tpos: "<< pos;
 
@@ -290,11 +379,11 @@ int main(int argc, char **argv)
   view.setScene( &scene );
  
   
-  scene.addLine(-100,0,0,0);
-  scene.addLine(0,0,100,0);
+  scene.addLine(-10,0,10,0);
+  scene.addLine(0,10,0,-10);
 
-  scene.addLine(0,-100,0,0);
-  scene.addLine(0,-100,0,100);
+//   scene.addLine(0,-10,0,0);
+//   scene.addLine(0,-10,0,10);
   
 
 
