@@ -27,11 +27,14 @@ class Vertex : public QGraphicsEllipseItem
 
 public:
 
-  Vertex( double x, double y, double r=20.0 )
-    : QGraphicsEllipseItem( x-r/2, y-r/2, r, r ), radius( r )
+  Vertex( double x, double y, double r=20.0, QGraphicsItem * parent=0 )
+    : QGraphicsEllipseItem( x-r/2, y-r/2, r, r, parent ), radius( r )
   {
 
     //setPos( x, y );
+    
+    qDebug() << "Creating vertex at: (" << x << ", " << y << ")."<<endl;
+
     setFlag( QGraphicsItem::ItemIsMovable, true );
 
     //setFlag( QGraphicsItem::ItemIsSelectable, true );
@@ -61,14 +64,33 @@ public:
     QPointF scene_pos( mouseEvent->scenePos());
       
     qDebug() << "Press in Vertex.";
-    qDebug() <<"\tpos: " << pos;
-    qDebug() <<"\tscene_pos: "<< scene_pos;
+    qDebug() <<"\tpos: " << mouseEvent->pos();
+    qDebug() <<"\tscene_pos: "<< mouseEvent->scenePos();
     qDebug() <<"\tItem currently at pos: " << this->pos();
-    qDebug() <<"\tItem currently at scene_pos: "<< scenePos();
+    qDebug() <<"\tItem currently at scene_pos: "<< this->scenePos();
 
     qDebug();
     
     QGraphicsEllipseItem::mousePressEvent( mouseEvent );  
+
+  }
+
+
+  void mouseReleaseEvent ( QGraphicsSceneMouseEvent * mouseEvent )
+  {
+
+    QPointF pos(mouseEvent->pos());
+    QPointF scene_pos( mouseEvent->scenePos());
+      
+    qDebug() << "Release in Vertex.";
+    qDebug() <<"\tpos: " << mouseEvent->pos();
+    qDebug() <<"\tscene_pos: "<< mouseEvent->scenePos();
+    qDebug() <<"\tItem currently at pos: " << this->pos();
+    qDebug() <<"\tItem currently at scene_pos: "<< this->scenePos();
+
+    qDebug();
+    
+    QGraphicsEllipseItem::mouseReleaseEvent( mouseEvent );  
 
   }
 
@@ -95,12 +117,61 @@ class GraphCanvas : public QGraphicsRectItem
 public:
 
   GraphCanvas( double x=-100, double y=-100, double w=200, double h=200 )
-    : QGraphicsRectItem( x, y, w, h )
+    : QGraphicsRectItem( x, y, w, h ), label( this )
   {
     setBrush( QColor(173, 241, 174, 200) );
     
+    setFlag(QGraphicsItem::ItemClipsChildrenToShape, true );
+
+    setAcceptHoverEvents( true );
+
+    label.setPlainText( "No mouse." );
 
   }
+
+  void hoverEnterEvent ( QGraphicsSceneHoverEvent * event ){
+
+    QString temp;
+    QTextStream text_stream(&temp);
+
+    double x= event->pos().x();
+    double y= event->pos().y();
+
+    text_stream << "(" << x << "," << y << ")";
+      
+    label.setPlainText( temp );
+
+  }
+
+  void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event ){
+
+    QString temp;
+    QTextStream text_stream(&temp);
+
+    double x= event->pos().x();
+    double y= event->pos().y();
+
+    text_stream << "(" << x << "," << y << ")";
+      
+    label.setPlainText( temp );
+
+  }
+
+
+  void hoverMoveEvent ( QGraphicsSceneHoverEvent * event ){
+
+    QString temp;
+    QTextStream text_stream(&temp);
+
+    double x= event->pos().x();
+    double y= event->pos().y();
+
+    text_stream << "(" << x << "," << y << ")";
+      
+    label.setPlainText( temp );
+
+  }
+
 
   void mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
   {
@@ -116,11 +187,23 @@ public:
 
     qDebug();
     
+    ///if( itemAt( scene_pos ) ){
+      
+    //      QGraphicsScene::mousePressEvent( mouseEvent );  
+      
+      //}else{
+      
+    Vertex* vx = new Vertex( pos.x(), pos.y(), 20.0, this );
+      
+    //addItem( vx );
+      //}
+
+
     QGraphicsRectItem::mousePressEvent( mouseEvent );  
 
   }
 
-
+  QGraphicsTextItem label;
 
 
 };
@@ -134,7 +217,9 @@ public:
     : QGraphicsScene( parent )
   {
     
-    gc = new GraphCanvas();
+    gc = new GraphCanvas(-200, -200, 300, 300 );
+
+    gc->setPos( -50, -50 );
 
     addItem( gc );
     
@@ -155,15 +240,11 @@ public:
     qDebug();
 
     if( itemAt( scene_pos ) ){
-
-    QGraphicsScene::mousePressEvent( mouseEvent );  
-
-    }else{
-
-      Vertex* vx = new Vertex( scene_pos.x(), scene_pos.y() );
-    
-      addItem( vx );
+      
+      QGraphicsScene::mousePressEvent( mouseEvent );  
+      
     }
+
 
   }
 
