@@ -19,6 +19,7 @@
 #include<QGraphicsScene>
 #include<QGraphicsEllipseItem>
 
+#include<cmath>
 
 #include<QDebug>
 
@@ -29,35 +30,26 @@ public:
 
   Vertex( double x, double y, double r=20.0, QGraphicsItem * parent=0 )
     : QGraphicsEllipseItem( x-r/2, y-r/2, r, r, parent ), radius( r ),
-      label(this)
+      label(this), show_label( true )
   {
 
-    //setPos( x, y );
-    
-    qDebug() << "Creating vertex at: (" << x << ", " << y << ")."<<endl;
-
     setFlag( QGraphicsItem::ItemIsMovable, true );
-
-    //setFlag( QGraphicsItem::ItemIsSelectable, true );
+    setFlag( QGraphicsItem::ItemIsSelectable, false );
 
     pen_color.setRgb( 88, 61, 164 );
     brush_color.setRgb( 154, 204, 50 );
+    selected_brush_color.setRgb(204, 154, 50 );
 
     QPen pen(Qt::SolidLine);
     pen.setColor( Qt::black );
     pen.setWidth( 2 );
 
     setPen( pen );
-    
-    //QRadialGradient gradient(x, y, radius, x, y);
-    //gradient.setColorAt(1, brush_color );
-    //gradient.setColorAt(0, QColor::fromRgbF(0, 0, 0, 1));
-    QBrush brush( Qt::darkGreen );
+
+    QBrush brush( brush_color );
     setBrush( brush );
     
-    //vx_number++;
-    //label.setPlainText( QString( "%1" ).arg( vx_number) );
-
+    id = ++vx_number;
   }
 
 
@@ -66,17 +58,7 @@ public:
 
     QPointF pos(mouseEvent->pos());
     QPointF scene_pos( mouseEvent->scenePos());
-      
-    qDebug() << "Press in Vertex.";
-    qDebug() <<"\tpos: " << mouseEvent->pos();
-    qDebug() <<"\tscene_pos: "<< mouseEvent->scenePos();
-    qDebug() <<"\tItem currently at pos: " << this->pos();
-    qDebug() <<"\tItem currently at scene_pos: "<< this->scenePos();
-
-    qDebug();
-
-    QGraphicsEllipseItem::mousePressEvent( mouseEvent );  
-
+    
   }
 
 
@@ -85,19 +67,56 @@ public:
 
     QPointF pos(mouseEvent->pos());
     QPointF scene_pos( mouseEvent->scenePos());
-      
-    qDebug() << "Release in Vertex.";
-    qDebug() <<"\tpos: " << mouseEvent->pos();
-    qDebug() <<"\tscene_pos: "<< mouseEvent->scenePos();
-    qDebug() <<"\tItem currently at pos: " << this->pos();
-    qDebug() <<"\tItem currently at scene_pos: "<< this->scenePos();
 
-    qDebug();
-    
     QGraphicsEllipseItem::mouseReleaseEvent( mouseEvent );  
 
   }
 
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
+	     QWidget * widget ){
+
+    Q_UNUSED( widget );
+
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(Qt::darkGray);
+    painter->drawEllipse(-7, -7, 20, 20);
+    
+    QRadialGradient gradient(-3, -3, 10);
+    if (option->state & QStyle::State_Sunken) {
+      gradient.setCenter(3, 3);
+      gradient.setFocalPoint(3, 3);
+      gradient.setColorAt(1, QColor(Qt::yellow).light(120));
+      gradient.setColorAt(0, QColor(Qt::darkYellow).light(120));
+    }else if(option->state & QStyle::State_Selected) {
+      gradient.setColorAt(0, Qt::red);
+      gradient.setColorAt(1, Qt::darkRed);
+    } else {
+      gradient.setColorAt(0, Qt::yellow);
+      gradient.setColorAt(1, Qt::darkYellow);
+    }
+    painter->setBrush(gradient);
+    painter->setPen(QPen(Qt::black, 0));
+    painter->drawEllipse(-10, -10, 20, 20);
+    
+
+    // if (option->state & QStyle::State_Selected) {
+
+    //   setBrush( selected_brush_color  );
+    // } else {
+    //   setBrush( brush_color  );
+    // }
+
+
+    
+    // QGraphicsEllipseItem::paint( painter, option, widget );
+    
+    if( show_label ){
+      painter->setPen(Qt::black);
+      painter -> drawText(rect(), Qt::AlignCenter, QString::number( id ) );
+    }
+
+
+  }
 
   enum { Type = UserType + 1 };
 
@@ -111,13 +130,59 @@ private:
   double radius;
   QColor pen_color;
   QColor brush_color;
+  QColor selected_brush_color;
   QGraphicsTextItem label;
   static int vx_number;
-  
+  int id;
+  bool show_label;
 
 };
 
 int Vertex::vx_number = 0;
+
+class QGraph : public QList<Vertex *>{
+
+public:
+
+  void add_vertex( Vertex * v ){
+
+    if( v && ! contains( v ))
+      append( v );
+
+  }
+
+  void erase_vertex( Vertex * v ){
+    int index = indexOf( v );
+    if( index > -1 ){
+      removeAt( index );
+    }
+  }
+
+  void circle_layout( double r= 100.0 ){
+
+    int n=size();
+    
+    double PI=3.1415926535;
+    
+    for( int i=0; i<n; i++ ){
+      double x= r*sin( (2*PI*i)/n);
+      double y= -r*cos( (2*PI*i)/n);
+      at(i)->setPos( x,y );
+    }
+
+  }
+
+  void set_movable( bool b ){
+
+    for (int i = 0; i < size(); ++i) {
+      at(i)->setFlag( QGraphicsItem::ItemIsMovable, b);
+      at(i)->setFlag( QGraphicsItem::ItemIsSelectable, !b );
+    }
+  }
+
+};
+
+
 
 class GraphCanvas : public QGraphicsRectItem
 {
@@ -125,175 +190,110 @@ class GraphCanvas : public QGraphicsRectItem
 public:
 
   GraphCanvas( double x=-100, double y=-100, double w=200, double h=200 )
-    : QGraphicsRectItem( x, y, w, h ), label( this )
+    : QGraphicsRectItem( x, y, w, h ), label( this ), move_mode( true )
   {
-    setBrush( QColor(173, 241, 174, 200) );
+    setBrush( Qt::darkBlue );
     
-    setFlag(QGraphicsItem::ItemClipsChildrenToShape, true );
-
-    setAcceptHoverEvents( true );
+    //setAcceptHoverEvents( true );
 
     label.setPlainText( "No mouse." );
 
-  }
+    Vertex * vx = new Vertex( 0, 0, 20.0, this );
 
-  void hoverEnterEvent ( QGraphicsSceneHoverEvent * event ){
-
-    QString temp;
-    QTextStream text_stream(&temp);
-
-    double x= event->pos().x();
-    double y= event->pos().y();
-
-    text_stream << "pos:(" << x << "," << y << ")"<<endl;
-
-    x= event->scenePos().x();
-    y= event->scenePos().y();
-
-    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
-
-    x= this->pos().x();
-    y= this->pos().y();
-
-    text_stream << "pos:(" << x << "," << y << ")"<<endl;
-
-    x= this->scenePos().x();
-    y= this->scenePos().y();
-
-    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
-      
-    label.setPlainText( temp );
+    g.add_vertex( vx );
 
   }
-
-  void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event ){
-
-    QString temp;
-    QTextStream text_stream(&temp);
-
-    double x= event->pos().x();
-    double y= event->pos().y();
-
-    text_stream << "pos:(" << x << "," << y << ")"<<endl;
-
-    x= event->scenePos().x();
-    y= event->scenePos().y();
-
-    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
-
-    x= this->pos().x();
-    y= this->pos().y();
-
-    text_stream << "pos:(" << x << "," << y << ")"<<endl;
-
-    x= this->scenePos().x();
-    y= this->scenePos().y();
-
-    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
-      
-    label.setPlainText( temp );
-
-  }
-
-
-  void hoverMoveEvent ( QGraphicsSceneHoverEvent * event ){
-
-    QString temp;
-    QTextStream text_stream(&temp);
-
-    double x= event->pos().x();
-    double y= event->pos().y();
-
-    text_stream << "pos:(" << x << "," << y << ")"<<endl;
-
-    x= event->scenePos().x();
-    y= event->scenePos().y();
-
-    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
-
-    x= this->pos().x();
-    y= this->pos().y();
-
-    text_stream << "pos:(" << x << "," << y << ")"<<endl;
-
-    x= this->scenePos().x();
-    y= this->scenePos().y();
-
-    text_stream << "scene_pos:(" << x << "," << y << ")"<<endl;
-      
-    label.setPlainText( temp );
-
-  }
-
-
+  
   void mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
   {
 
     QPointF pos(mouseEvent->pos());
-    QPointF scene_pos( mouseEvent->scenePos());
-      
-    qDebug() << "Press in GraphCanvas.";
-    qDebug() <<"\tpos: " << pos;
-    qDebug() <<"\tscene_pos: "<< scene_pos;
-    qDebug() <<"\tItem currently at pos: " << this->pos();
-    qDebug() <<"\tItem currently at scene_pos: "<< scenePos();
-
-    qDebug();
     
-    ///if( itemAt( scene_pos ) ){
-      
-    //      QGraphicsScene::mousePressEvent( mouseEvent );  
-      
-      //}else{
-      
-    Vertex* vx = new Vertex( pos.x(), pos.y(), 20.0, this );
-      
-    //addItem( vx );
-      //}
+    if( mouseEvent->button()==Qt::LeftButton){
 
+      if( move_mode ){
+	Vertex * vx  = new Vertex( 0, 0, 20, this );
+      
+	vx->setPos( pos.x(), pos.y() );
+	
+	g.add_vertex( vx );
+      }else{
+	
+	QGraphicsRectItem::mousePressEvent( mouseEvent );  
 
-    QGraphicsRectItem::mousePressEvent( mouseEvent );  
-
+      }
+    }else if( mouseEvent -> button() == Qt::RightButton ){
+      QGraphicsRectItem::mousePressEvent( mouseEvent );  
+      
+    }
   }
 
-  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget ){
+
+ void contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+ {
+     QMenu menu;
+     QAction * circleLayout = menu.addAction( "Circle Layout" );
+     QAction * moveMode = new QAction("Move", &menu);
+     moveMode->setCheckable( true );
+     moveMode->setChecked( move_mode );
+     menu.addAction( moveMode );
+       
+     QAction *selectedAction = menu.exec(event->screenPos());
+
+     if( selectedAction == circleLayout ){
+
+       g.circle_layout();
+
+     }else if( selectedAction == moveMode ){
+
+       move_mode = !move_mode;
+       g.set_movable( move_mode );
+       
+     }
+
+ }
+
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
+	     QWidget * widget ){
     QGraphicsRectItem::paint( painter, option, widget );
-
-    QPen old_pen( pen() );
-
-    QPen new_pen(Qt::SolidLine);
-    QColor new_color(Qt::lightGray);
-    new_color.setAlpha( 100 );
-    new_pen.setColor( new_color );
-    new_pen.setWidth( 2 );
-
-    setPen( new_pen );
     
-    QRectF r(rect());
+    // // QPen old_pen( pen() );
     
-    int x= (int)r.x();
-    int y= (int)r.y();
-    int height= (int)r.height();
-    int width= (int)r.width();
+    // // QPen new_pen(Qt::SolidLine);
+    // // QColor new_color(Qt::lightGray);
+    // // new_color.setAlpha( 100 );
+    // // new_pen.setColor( new_color );
+    // // new_pen.setWidth( 2 );
+
+    // // setPen( new_pen );
+    
+    // // QRectF r(rect());
+    
+    // // int x= (int)r.x();
+    // // int y= (int)r.y();
+    // // int height= (int)r.height();
+    // // int width= (int)r.width();
       
 
-    for( int h= 0; h < width; h+=10 )
-      painter->drawLine( x+h, y, x+h, y+height);
+    // // for( int h= 0; h < width; h+=20 )
+    // //   painter->drawLine( x+h, y, x+h, y+height);
 
-    for( int v= 0; v < height; v+=10 )
-      painter->drawLine( x, y+v, x+width, y+v);
+    // // for( int v= 0; v < height; v+=20 )
+    // //   painter->drawLine( x, y+v, x+width, y+v);
 
-    painter->drawRect(-5,-5,10,10);
+    // // painter->drawRect(-5,-5,10,10);
 
 
-    //setPen( old_pen );
+    // // setPen( old_pen );
 
   }
 
 private:
 
   QGraphicsTextItem label;
-
+  QGraph g;
+  bool move_mode;
+  
 
 };
 
@@ -317,24 +317,15 @@ public:
   void mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
   {
     
-    QPointF pos(mouseEvent->pos());
-    QPointF scene_pos( mouseEvent->scenePos());
-    QPoint screen_pos( mouseEvent->screenPos());
-      
-    qDebug() << "Press in Scene.";
-    qDebug() <<"\tpos: " << pos;
-    qDebug() <<"\tscene_pos: "<< scene_pos;
-    qDebug() <<"\tscreen_pos: "<< screen_pos;
-    
-    qDebug();
+    QGraphicsScene::mousePressEvent( mouseEvent );  
 
-    if( itemAt( scene_pos ) ){
-      
-      QGraphicsScene::mousePressEvent( mouseEvent );  
-      
-    }
+  }
 
+  void mouseDoubleClickEvent( QGraphicsSceneMouseEvent * mouseEvent )
+  {
 
+    QGraphicsScene::mouseDoubleClickEvent( mouseEvent );  
+      
   }
 
   GraphCanvas * gc;
@@ -349,16 +340,11 @@ public:
   GraphView(): QGraphicsView()
   {
     setRenderHint(QPainter::Antialiasing);
+    setDragMode(QGraphicsView::RubberBandDrag );
   }
 
   void mousePressEvent ( QMouseEvent * event )
   {
-
-
-    QPoint pos(event->pos());
-    qDebug() << "-------------------------------------------------------------------------";
-    qDebug() << "Press in View.";
-    qDebug() << "\tpos: "<< pos;
 
     QGraphicsView::mousePressEvent( event );  
 
@@ -381,11 +367,6 @@ int main(int argc, char **argv)
   
   scene.addLine(-10,0,10,0);
   scene.addLine(0,10,0,-10);
-
-//   scene.addLine(0,-10,0,0);
-//   scene.addLine(0,-10,0,10);
-  
-
 
   view.show();
   return app.exec();
