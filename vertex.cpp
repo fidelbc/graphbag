@@ -24,11 +24,17 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
+#include "edge.h"
+
+#include <QDebug>
+
 Vertex::Vertex( double x, double y, double r=20.0, QGraphicsItem * parent=0 )
   : QGraphicsEllipseItem( x-r/2, y-r/2, r, r, parent ), radius( r ),
     label(this), show_label( true )
 {
 
+  setZValue( 50.0 );
+  setFlag(ItemSendsGeometryChanges);
   setFlag( QGraphicsItem::ItemIsMovable, false );
   setFlag( QGraphicsItem::ItemIsSelectable, true );
  
@@ -117,6 +123,31 @@ void Vertex::paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
 
 
 }
+
+void Vertex::add_edge( Edge * e ){
+
+  edges.append( e );
+
+}
+
+QVariant Vertex::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+
+
+
+  switch (change) {
+  case ItemPositionHasChanged:
+    foreach (Edge * e, edges)
+      e->adjust();
+
+    break;
+  default:
+    break;
+  };
+  
+  return QGraphicsItem::itemChange(change, value);
+}
+
 
 int Vertex::type() const
 {

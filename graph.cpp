@@ -20,6 +20,7 @@
 #include<cmath>
 
 #include "vertex.h"
+#include "edge.h"
 
 void Graph::add_vertex( Vertex * v ){
 
@@ -27,6 +28,14 @@ void Graph::add_vertex( Vertex * v ){
     append( v );
 
 }
+
+void Graph::add_edge( Vertex * u, Vertex * v ){
+  
+  if( u && v && (u != v))
+    Edge * e = new  Edge( u, v, v->parentItem() );
+  
+}
+
 
 void Graph::erase_vertex( Vertex * v ){
   int index = indexOf( v );

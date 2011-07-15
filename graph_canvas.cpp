@@ -26,16 +26,34 @@
 #include <QMenu>
 #include <QAction>
 
+#include <cmath>
+
 GraphCanvas::GraphCanvas( double x=-100, double y=-100, double w=200, double h=200 )
   : QGraphicsRectItem( x, y, w, h ), move_mode( false )
 {
   setBrush( QBrush(QColor(0, 0, 255, 127)) );
-    
-  Vertex * vx = new Vertex( 0.0, 0.0, 20.0, this );
 
   g=new Graph();
+    
+  int n=25;
+  double r=150;
 
-  g->add_vertex( vx );
+  QList<Vertex *> vxs;
+  for( int i=0; i< n; i++ )
+    vxs.append( new Vertex( 0, 0, 20.0, this ) );
+
+  double PI=3.1415926535;
+  for( int i=0; i<n; i++ ){
+    double x= r*sin( (2*PI*i)/n);
+    double y= -r*cos( (2*PI*i)/n);
+    vxs.at(i) -> setPos( x, y );
+    g->add_vertex( vxs.at(i) );
+  }
+
+  for( int i=0; i<n; i++ ){
+    for( int j=i+1; j<n; j++ )
+      g->add_edge( vxs.at(i), vxs.at(j) );
+  }
 
 }
   

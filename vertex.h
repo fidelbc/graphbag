@@ -22,8 +22,7 @@
 
 class QGraphicsSceneMouseEvent;
 class QPainter;
-
-
+class Edge;
 
 class Vertex : public QGraphicsEllipseItem
 {
@@ -44,6 +43,10 @@ public:
 
   int type() const;
 
+  void add_edge( Edge * e );
+
+  QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
 private:
 
   double radius;
@@ -54,6 +57,8 @@ private:
   static int vx_number;
   int id;
   bool show_label;
+
+  QList<Edge *> edges;
 
 };
 

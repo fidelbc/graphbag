@@ -15,25 +15,24 @@
 //     You should have received a copy of the GNU General Public License
 //     along with graphbag.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GRAPH_H
-#define GRAPH_H
+#ifndef EDGE_H
+#define EDGE_H
 
-#include <QList>
+#include <QGraphicsLineItem>
+
 class Vertex;
-class Edge;
 
-class Graph : public QList<Vertex *>{
-public:
+class Edge: public QGraphicsLineItem{
 
-  void add_vertex( Vertex * v );
+ public:
+  Edge( Vertex * h, Vertex * t, QGraphicsItem * parent );
 
-  void add_edge( Vertex * u, Vertex * v );
+  void adjust();
+  
+ private:
 
-  void erase_vertex( Vertex * v );
-
-  void circle_layout( double r= 100.0 );
-
-  void set_movable( bool b );
+  Vertex * head;
+  Vertex * tail;
 };
 
 #endif

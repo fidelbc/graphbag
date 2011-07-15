@@ -15,25 +15,46 @@
 //     You should have received a copy of the GNU General Public License
 //     along with graphbag.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GRAPH_H
-#define GRAPH_H
+#include "edge.h"
 
-#include <QList>
-class Vertex;
-class Edge;
+#include<QGraphicsLineItem>
+#include "vertex.h"
+#include<QPen>
 
-class Graph : public QList<Vertex *>{
-public:
+#include <QDebug>
 
-  void add_vertex( Vertex * v );
+Edge::Edge( Vertex * t, Vertex * h, QGraphicsItem * parent = 0 )
+  : QGraphicsLineItem( parent )
+{
+  
+  setZValue( 25.0 );
+  
+  head = h;
+  tail = t;
 
-  void add_edge( Vertex * u, Vertex * v );
+  head-> add_edge( this );
+  tail-> add_edge( this );
+  
+  QPen pen(Qt::SolidLine);
+  pen.setColor( Qt::black );
+  pen.setWidth( 2 );
+    
+  setPen( pen );
+    
+  setLine( QLineF( head->pos(), tail->pos() ) );
 
-  void erase_vertex( Vertex * v );
+}
 
-  void circle_layout( double r= 100.0 );
+void Edge::adjust()
+{
+  if (!head || !tail)
+    return;
 
-  void set_movable( bool b );
-};
+  prepareGeometryChange();
 
-#endif
+  setLine( QLineF( head->pos(), tail->pos() ) );
+
+  update();
+
+}
+
