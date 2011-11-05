@@ -1,0 +1,159 @@
+[ebrowse-hs "ebrowse 5.0" " -x" () ()][ebrowse-ts [ebrowse-cs "QGraphicsRectItem" () 0() () 0() ]
+([ebrowse-ts [ebrowse-cs "GraphCanvas" () 0"graph_canvas.h" "class GraphCanvas :" 878"graph_canvas.cpp" ]
+()([ebrowse-ms "g" () 0 () "  Graph * g;" 1230 2  () () 0]
+[ebrowse-ms "move_mode" () 0 () "  bool move_mode;" 1248 2  () () 0]
+)
+([ebrowse-ms "GraphCanvas" () 0 () "anvas( double x, double y, double w, double h );" 937 0  () " double y=-100, double w=200, double h=200 )
+  :" 989]
+[ebrowse-ms "contextMenuEvent" () 0 () " contextMenuEvent(QGraphicsSceneContextMenuEvent" 1097 0  () ":contextMenuEvent(QGraphicsSceneContextMenuEvent" 2117]
+[ebrowse-ms "mousePressEvent" () 0 () " void mousePressEvent ( QGraphicsSceneMouseEvent" 1025 0  () "nvas::mousePressEvent ( QGraphicsSceneMouseEvent" 1665]
+[ebrowse-ms "paint" () 0 () "  void paint(QPainter" 1129 0  () "void GraphCanvas::paint(QPainter" 2642]
+)
+()
+()
+()
+()
+()()
+])()
+()
+()
+()
+()
+()
+()()
+][ebrowse-ts [ebrowse-cs "QGraphicsScene" () 0() () 0() ]
+([ebrowse-ts [ebrowse-cs "GraphScene" () 0"graph_scene.h" "class GraphScene :" 862"graph_scene.cpp" ]
+()([ebrowse-ms "gc" () 0 () "  GraphCanvas * gc;" 1098 0  () () 0]
+)
+([ebrowse-ms "GraphScene" () 0 () "  GraphScene( QGraphicsView *parent );" 927 0  () "phScene::GraphScene( QGraphicsView *parent )
+  :" 867]
+[ebrowse-ms "mouseDoubleClickEvent" () 0 () " mouseDoubleClickEvent( QGraphicsSceneMouseEvent" 1061 0  () ":mouseDoubleClickEvent( QGraphicsSceneMouseEvent" 1224]
+[ebrowse-ms "mousePressEvent" () 0 () " void mousePressEvent ( QGraphicsSceneMouseEvent" 989 0  () "cene::mousePressEvent ( QGraphicsSceneMouseEvent" 1082]
+)
+()
+()
+()
+()
+()()
+])()
+()
+()
+()
+()
+()
+()()
+][ebrowse-ts [ebrowse-cs "QGraphicsLineItem" () 0() () 0() ]
+([ebrowse-ts [ebrowse-cs "Edge" () 0"edge.h" "class Edge:" 839"edge.cpp" ]
+()([ebrowse-ms "head" () 0 () "  Vertex * head;" 982 2  () () 0]
+[ebrowse-ms "tail" () 0 () "  Vertex * tail;" 999 2  () () 0]
+)
+([ebrowse-ms "Edge" () 0 () "ertex * h, Vertex * t, QGraphicsItem * parent );" 890 0  () " t, Vertex * h, QGraphicsItem * parent = 0 )
+  :" 872]
+[ebrowse-ms "adjust" () 0 () "  void adjust()" 950 0  () "void Edge::adjust()" 1238]
+)
+()
+()
+()
+()
+()()
+])()
+()
+()
+()
+()
+()
+()()
+][ebrowse-ts [ebrowse-cs "QList" () 32() () 0() ]
+([ebrowse-ts [ebrowse-cs "Graph" () 0"graph.h" "class Graph :" 842"graph.cpp" ]
+()()
+([ebrowse-ms "add_edge" () 0 () "  void add_edge( Vertex" 933 0  () "void Graph::add_edge( Vertex" 944]
+[ebrowse-ms "add_vertex" () 0 () "  void add_vertex( Vertex" 901 0  () "void Graph::add_vertex( Vertex" 858]
+[ebrowse-ms "circle_layout" () 0 () "  void circle_layout( double" 1018 0  () "void Graph::circle_layout( double" 1202]
+[ebrowse-ms "erase_vertex" () 0 () "  void erase_vertex( Vertex" 981 0  () "void Graph::erase_vertex( Vertex" 1083]
+[ebrowse-ms "set_movable" () 0 () "  void set_movable( bool" 1056 0  () "void Graph::set_movable( bool" 1416]
+)
+()
+()
+()
+()
+()()
+])()
+()
+()
+()
+()
+()
+()()
+][ebrowse-ts [ebrowse-cs "QGraphicsEllipseItem" () 0() () 0() ]
+([ebrowse-ts [ebrowse-cs "Vertex" () 0"vertex.h" "class Vertex :" 895"vertex.cpp" ]
+()([ebrowse-ms "brush_color" () 0 () "  QColor brush_color;" 1467 2  () () 0]
+[ebrowse-ms "edges" () 0 () "  QList<Edge *> edges;" 1602 2  () () 0]
+[ebrowse-ms "id" () 0 () "  int id;" 1559 2  () () 0]
+[ebrowse-ms "label" () 0 () "  QGraphicsTextItem label;" 1525 2  () () 0]
+[ebrowse-ms "pen_color" () 0 () "  QColor pen_color;" 1445 2  () () 0]
+[ebrowse-ms "radius" () 0 () "  double radius;" 1425 2  () () 0]
+[ebrowse-ms "selected_brush_color" () 0 () "  QColor selected_brush_color;" 1498 2  () () 0]
+[ebrowse-ms "show_label" () 0 () "  bool show_label;" 1578 2  () () 0]
+)
+([ebrowse-ms "Vertex" () 0 () "x, double y, double r, QGraphicsItem * parent );" 952 0  () "y, double r=20.0, QGraphicsItem * parent=0 )
+  :" 991]
+[ebrowse-ms "add_edge" () 0 () "  void add_edge( Edge" 1316 0  () "void Vertex::add_edge( Edge" 3307]
+[ebrowse-ms "itemChange" () 0 () "  QVariant itemChange(GraphicsItemChange" 1365 0  () "QVariant Vertex::itemChange(GraphicsItemChange" 3387]
+[ebrowse-ms "mousePressEvent" () 0 () " void mousePressEvent ( QGraphicsSceneMouseEvent" 1052 0  () "rtex::mousePressEvent ( QGraphicsSceneMouseEvent" 1669]
+[ebrowse-ms "mouseReleaseEvent" () 0 () "oid mouseReleaseEvent ( QGraphicsSceneMouseEvent" 1122 0  () "ex::mouseReleaseEvent ( QGraphicsSceneMouseEvent" 1888]
+[ebrowse-ms "paint" () 0 () "  void paint(QPainter" 1161 0  () "void Vertex::paint(QPainter" 2095]
+[ebrowse-ms "type" () 4 () "  int type()" 1286 0  () "int Vertex::type()" 3639]
+)
+([ebrowse-ms "vx_number" () 0 () "  static int vx_number;" 1549 2  () "int Vertex::vx_number = 0;" 3692]
+)
+()
+()
+()
+()()
+])()
+()
+()
+()
+()
+()
+()()
+][ebrowse-ts [ebrowse-cs "QGraphicsView" () 0() () 0() ]
+([ebrowse-ts [ebrowse-cs "GraphView" () 0"graph_view.h" "class GraphView :" 858"graph_view.cpp" ]
+()()
+([ebrowse-ms "GraphView" () 0 () "  GraphView();" 906 0  () "GraphView::GraphView():" 825]
+[ebrowse-ms "mousePressEvent" () 0 () "  void mousePressEvent ( QMouseEvent" 945 0  () "void GraphView::mousePressEvent ( QMouseEvent" 981]
+)
+()
+()
+()
+()
+()()
+])()
+()
+()
+()
+()
+()
+()()
+][ebrowse-ts [ebrowse-cs "*Globals*" () 0() () 0"edge.h" ]
+()()
+([ebrowse-ms "main" () 0 "main.cpp" "int main(int" 834 0  "main.cpp" "int main(int" 834]
+)
+()
+()
+([ebrowse-ms "EDGE_H" () 512 () () 0 0  () "#define EDGE_H
+" 782]
+[ebrowse-ms "GRAPH_CANVAS_H" () 512 () () 0 0  "graph_canvas.h" "#define GRAPH_CANVAS_H
+" 798]
+[ebrowse-ms "GRAPH_H" () 512 () () 0 0  "graph.h" "#define GRAPH_H
+" 784]
+[ebrowse-ms "GRAPH_SCENE_H" () 512 () () 0 0  "graph_scene.h" "#define GRAPH_SCENE_H
+" 796]
+[ebrowse-ms "GRAPH_VIEW_H" () 512 () () 0 0  "graph_view.h" "#define GRAPH_VIEW_H
+" 794]
+[ebrowse-ms "VERTEX_H" () 512 () () 0 0  "vertex.h" "#define VERTEX_H
+" 786]
+)
+()
+()()
+]
