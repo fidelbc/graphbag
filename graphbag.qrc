@@ -1,0 +1,10 @@
+ <!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+     <file>icons/document-open.png</file>
+     <file>icons/document-save.png</file>
+
+     <file>icons/add_vertex.png</file>
+     <file>icons/add_edge.png</file>
+     <file>icons/move_vertex.png</file>
+ </qresource>
+ </RCC>
