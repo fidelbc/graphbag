@@ -29,7 +29,7 @@ class Vertex : public QGraphicsEllipseItem
 
 public:
 
-  Vertex( double x, double y, double r, QGraphicsItem * parent );
+  Vertex( double x, double y, double r, QGraphicsItem * parent=0 );
 
   void mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent );
 

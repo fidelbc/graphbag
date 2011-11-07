@@ -19,7 +19,9 @@
 #define GRAPH_SCENE_H
 
 
-class GraphCanvas;
+//class GraphCanvas;
+class Graph;
+class QPainter;
 #include <QGraphicsScene>
 
 class GraphScene : public  QGraphicsScene
@@ -29,13 +31,27 @@ public:
 
   GraphScene( QGraphicsView *parent );
 
+  void init_graph();
+
   void mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent );
 
   void mouseReleaseEvent ( QGraphicsSceneMouseEvent * mouseEvent );
 
   void mouseDoubleClickEvent( QGraphicsSceneMouseEvent * mouseEvent );
 
-  GraphCanvas * gc;
+  void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+
+  enum Mode { VERTEX_ADD, EDGE_ADD, MOVE, SELECT };
+
+  void setMode( Mode m );
+
+private:
+  Graph * g;
+  bool move_mode;  
+  Mode current_mode;
+  
+
+  //  GraphCanvas * gc;
 
 };
 

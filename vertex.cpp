@@ -28,7 +28,7 @@
 
 #include <QDebug>
 
-Vertex::Vertex( double x, double y, double r=20.0, QGraphicsItem * parent=0 )
+Vertex::Vertex( double x, double y, double r=20.0, QGraphicsItem * parent )
   : QGraphicsEllipseItem( x-r/2, y-r/2, r, r, parent ), radius( r ),
     label(this), show_label( true )
 {
