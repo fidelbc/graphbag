@@ -17,26 +17,21 @@
 
 #include <QtGui>
 
-#include "graph_view.h"
-#include "graph_scene.h"
+#include "main_window.h"
+
 
 
 
 int main(int argc, char **argv)
 {
-  QApplication app(argc, argv);
-  qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-
-  GraphView view;
-
-  GraphScene scene( &view );
-
-  view.setScene( &scene );
- 
   
-  scene.addLine(-10,0,10,0);
-  scene.addLine(0,10,0,-10);
+  Q_INIT_RESOURCE(graphbag);
 
-  view.show();
+  QApplication app(argc, argv);
+  //qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+  mainWindow m;
+
+  m.show();
+
   return app.exec();
 }

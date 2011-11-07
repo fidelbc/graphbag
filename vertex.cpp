@@ -57,24 +57,27 @@ Vertex::Vertex( double x, double y, double r=20.0, QGraphicsItem * parent=0 )
 
 void Vertex::mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
 {
+  qDebug() << "MPE in vx: forwarding event.";
 
   QPointF pos(mouseEvent->pos());
   QPointF scene_pos( mouseEvent->scenePos());
 
 
   QGraphicsEllipseItem::mousePressEvent( mouseEvent );  
+  qDebug() << "MPE in vx: flow controll back!";
 }
 
 
 void Vertex::mouseReleaseEvent ( QGraphicsSceneMouseEvent * mouseEvent )
 {
-
+  qDebug() << "MRE in vx: forwarding event.";
   QPointF pos(mouseEvent->pos());
   QPointF scene_pos( mouseEvent->scenePos());
 
   QGraphicsEllipseItem::mouseReleaseEvent( mouseEvent );  
     
   update();
+  qDebug() << "MRE in vx: flow controll back!";
 
 }
 

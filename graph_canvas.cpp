@@ -25,8 +25,13 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
 #include <QAction>
+#include <QDebug>
+
+#include "misc.h"
 
 #include <cmath>
+
+
 
 GraphCanvas::GraphCanvas( double x=-100, double y=-100, double w=200, double h=200 )
   : QGraphicsRectItem( x, y, w, h ), move_mode( false )
@@ -35,7 +40,7 @@ GraphCanvas::GraphCanvas( double x=-100, double y=-100, double w=200, double h=2
 
   g=new Graph();
     
-  int n=25;
+  int n=12;
   double r=150;
 
   QList<Vertex *> vxs;
@@ -51,15 +56,15 @@ GraphCanvas::GraphCanvas( double x=-100, double y=-100, double w=200, double h=2
   }
 
   for( int i=0; i<n; i++ ){
-    for( int j=i+1; j<n; j++ )
-      g->add_edge( vxs.at(i), vxs.at(j) );
+    g->add_edge( vxs.at(i), vxs.at(mod(i+1,n) ) );
+    g->add_edge( vxs.at(i), vxs.at(mod(i-1,n) ) );
   }
 
 }
   
 void GraphCanvas::mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
 {
-
+  qDebug() << "MPE in gc: forwarding event.";
   QPointF pos(mouseEvent->pos());
     
   if( mouseEvent->button()==Qt::LeftButton){
@@ -76,15 +81,21 @@ void GraphCanvas::mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
       
   }
 
-
+  qDebug() << "MPE in gc: flow controll back!";
 }
 
+void GraphCanvas::mouseReleaseEvent ( QGraphicsSceneMouseEvent * mouseEvent ){
+  qDebug() << "MRE in gc: forwarding event.";
+  QGraphicsRectItem::mouseReleaseEvent( mouseEvent );  
+  qDebug() << "MRE in gs: flow controll back!";
+}
 
 void GraphCanvas::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
   QMenu menu;
   QAction * circleLayout = menu.addAction( "Circle Layout" );
   QAction * moveMode = new QAction("Move", &menu);
+
   moveMode->setCheckable( true );
   moveMode->setChecked( move_mode );
   menu.addAction( moveMode );
@@ -99,10 +110,14 @@ void GraphCanvas::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
     move_mode = !move_mode;
     g->set_movable( move_mode );
+    g->set_selectable( !move_mode );
        
   }
 
 }
+
+
+
 
 void GraphCanvas::paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
 	   QWidget * widget ){
@@ -136,5 +151,13 @@ void GraphCanvas::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
 
 
   // // setPen( old_pen );
+
+}
+
+void GraphCanvas::setMode( Mode m ){
+
+  current_mode = m;
+  
+  qDebug() << "Mode set to: " << m;
 
 }

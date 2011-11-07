@@ -28,6 +28,8 @@ class Edge: public QGraphicsLineItem{
   Edge( Vertex * h, Vertex * t, QGraphicsItem * parent );
 
   void adjust();
+
+  enum { Type = UserType + 2 };
   
  private:
 

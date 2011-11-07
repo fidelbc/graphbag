@@ -31,6 +31,8 @@ public:
 
   void mousePressEvent ( QMouseEvent * event );
 
+  void mouseReleaseEvent ( QMouseEvent * event );
+
 };
 
 #endif

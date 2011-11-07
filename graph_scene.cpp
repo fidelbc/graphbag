@@ -17,7 +17,10 @@
 
 #include "graph_scene.h"
 
-#include<QGraphicsScene>
+#include <QGraphicsScene>
+
+#include <QDebug>
+
 #include "graph_canvas.h"
 
 GraphScene::GraphScene( QGraphicsView *parent )
@@ -33,8 +36,16 @@ GraphScene::GraphScene( QGraphicsView *parent )
 
 void GraphScene::mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
 {
-    
+  qDebug() << "MPE in gs: forwarding event.";
   QGraphicsScene::mousePressEvent( mouseEvent );  
+  qDebug() << "MPE in gs: flow controll back!";
+}
+
+void GraphScene::mouseReleaseEvent ( QGraphicsSceneMouseEvent * mouseEvent )
+{
+  qDebug() << "MRE in gs: forwarding event.";
+  QGraphicsScene::mouseReleaseEvent( mouseEvent );  
+  qDebug() << "MRE in gs: flow controll back!";
 
 }
 

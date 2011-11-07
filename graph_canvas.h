@@ -32,14 +32,22 @@ public:
   
   void mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent );
 
+  void mouseReleaseEvent ( QGraphicsSceneMouseEvent * mouseEvent );
+
   void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 
   void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
 	     QWidget * widget );
 
+  enum Mode { VERTEX_ADD, EDGE_ADD, MOVE, SELECT };
+
+  void setMode( Mode m );
+
 private:
   Graph * g;
   bool move_mode;  
+  Mode current_mode;
+  
 
 };
 

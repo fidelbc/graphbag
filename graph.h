@@ -34,6 +34,8 @@ public:
   void circle_layout( double r= 100.0 );
 
   void set_movable( bool b );
+
+  void set_selectable( bool b );
 };
 
 #endif

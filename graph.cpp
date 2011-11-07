@@ -32,7 +32,7 @@ void Graph::add_vertex( Vertex * v ){
 void Graph::add_edge( Vertex * u, Vertex * v ){
   
   if( u && v && (u != v))
-    Edge * e = new  Edge( u, v, v->parentItem() );
+    new  Edge( u, v, v->parentItem() );
   
 }
 
@@ -58,9 +58,12 @@ void Graph::circle_layout( double r ){
 }
 
 void Graph::set_movable( bool b ){
-
-  for (int i = 0; i < size(); ++i) {
+  for (int i = 0; i < size(); ++i)
     at(i)->setFlag( QGraphicsItem::ItemIsMovable, b);
-    at(i)->setFlag( QGraphicsItem::ItemIsSelectable, !b );
-  }
+}
+
+
+void Graph::set_selectable( bool b ){
+  for (int i = 0; i < size(); ++i) 
+    at(i)->setFlag( QGraphicsItem::ItemIsSelectable, b);
 }

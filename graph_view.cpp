@@ -19,6 +19,8 @@
 
 #include <QGraphicsView>
 
+#include <QDebug>
+
 GraphView::GraphView(): QGraphicsView()
 {
   setRenderHint(QPainter::Antialiasing);
@@ -27,7 +29,22 @@ GraphView::GraphView(): QGraphicsView()
 
 void GraphView::mousePressEvent ( QMouseEvent * event )
 {
+  
+  qDebug() << "MPE in gv: forwarding event.";
 
   QGraphicsView::mousePressEvent( event );  
+
+  qDebug() << "MPE in gv: flow controll back!";
+
+}
+
+void GraphView::mouseReleaseEvent ( QMouseEvent * event )
+{
+  
+  qDebug() << "MRE in gv: forwarding event.";
+
+  QGraphicsView::mouseReleaseEvent( event );  
+
+  qDebug() << "MRE in gv: flow controll back!";
 
 }
