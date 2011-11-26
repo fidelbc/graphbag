@@ -75,8 +75,6 @@ void GraphView::init_graph()
     g->add_edge( vxs.at(i), vxs.at(mod(i-1,n) ) );
   }
 
-  qDebug() << "i_g";
-
 }
 
 
@@ -112,7 +110,7 @@ void GraphView::contextMenuEvent(QContextMenuEvent *event)
   moveMode->setChecked( move_mode );
   menu.addAction( moveMode );
        
-  QAction *selectedAction = menu.exec(event->pos());
+  QAction *selectedAction = menu.exec( QCursor::pos() );// event->pos() );
 
   if( selectedAction == circleLayout ){
 

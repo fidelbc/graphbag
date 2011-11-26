@@ -5,7 +5,6 @@
 
 #include <QDebug>
 
-#include "graph_scene.h"
 #include "graph_view.h"
 
 class mainWindow : public QMainWindow 
