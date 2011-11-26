@@ -22,16 +22,33 @@
 
 class QMouseEvent;
 
+class Graph;
+
 class GraphView :
   public QGraphicsView
 {
 
-public:
+ public:
   GraphView();
+  
+  void init_graph();
 
   void mousePressEvent ( QMouseEvent * event );
-
+  
   void mouseReleaseEvent ( QMouseEvent * event );
+  
+  void contextMenuEvent ( QContextMenuEvent * event );
+
+  enum Mode { VERTEX_ADD, EDGE_ADD, MOVE, SELECT };
+
+  void setMode( Mode m );
+  
+private:
+
+  Graph * g;
+  bool move_mode;  
+  Mode current_mode;
+
 
 };
 

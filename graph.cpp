@@ -32,7 +32,7 @@ void Graph::add_vertex( Vertex * v ){
 void Graph::add_edge( Vertex * u, Vertex * v ){
   
   if( u && v && (u != v))
-    new  Edge( u, v, v->parentItem() );
+    new Edge( u, v, v->parentItem() );
   
 }
 

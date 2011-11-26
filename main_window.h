@@ -16,9 +16,6 @@ class mainWindow : public QMainWindow
 
     view = new GraphView();
     
-    scene= new GraphScene( view );
-    
-    view->setScene( scene );
     
     setCentralWidget( view );
     
@@ -26,9 +23,6 @@ class mainWindow : public QMainWindow
 
     resize(550,550);
 
-    scene->addLine(-10,0,10,0);
-    scene->addLine(0,10,0,-10);
-    
     createActions();
     createMenus();
     createToolbars();
@@ -91,7 +85,7 @@ class mainWindow : public QMainWindow
   }
 
   GraphView * view;
-  GraphScene * scene;
+
   QMenu * fileMenu;
   QAction * openAct;
   QAction * saveAct;
