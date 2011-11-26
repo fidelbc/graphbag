@@ -1,1 +1,5 @@
-Just C++ experimental code for a graph theory Qt GUI program.
+Just C++ experimental (useless at the moment) code for a graph theory Qt GUI program.
+
+Project can be built by using:
+
+$ qmake -project && qmake && make
