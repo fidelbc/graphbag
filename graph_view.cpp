@@ -122,9 +122,9 @@ void GraphView::mousePressEvent ( QMouseEvent * event )
 	     Edge * e=g->add_edge( vx, u );
 	     s->addItem( e );
 	  }
-	  qDebug()<< "Vx selected: " << (vx->isSelected());
+	  //qDebug()<< "Vx selected: " << (vx->isSelected());
 	  vx->setSelected( false );
-	  qDebug()<< "Vx selected: " << (vx->isSelected());
+	  //qDebug()<< "Vx selected: " << (vx->isSelected());
 	}else if( selected_vxs->size() == 0 ){
 	  selected_vxs->push(vx);
 	}else{
@@ -164,10 +164,10 @@ void GraphView::mouseReleaseEvent ( QMouseEvent * event )
     case EDG_ADD:
       vx=qgraphicsitem_cast<Vertex *>( itemAt( event->pos() ));
       if( vx ){
-	qDebug()<< "Vx selected: " << (vx->isSelected());
+	//qDebug()<< "Vx selected: " << (vx->isSelected());
 	if( selected_vxs->size() == 0 )
 	  vx->setSelected(false );
-	qDebug()<< "Vx selected: " << (vx->isSelected());
+	//qDebug()<< "Vx selected: " << (vx->isSelected());
       }
       //event->accept();
       break;
@@ -240,3 +240,8 @@ void GraphView::setMode( Mode m ){
   current_mode = m;
 }
 
+void GraphView::circleLayout(){
+
+  g->circle_layout();
+
+}

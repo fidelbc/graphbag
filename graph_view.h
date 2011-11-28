@@ -47,6 +47,8 @@ class GraphView :
 
   void setMode( Mode m );
   
+  void circleLayout();
+
 private:
 
   Graph * g;

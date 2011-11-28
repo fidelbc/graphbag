@@ -20,6 +20,7 @@ class mainWindow : public QMainWindow
   public slots:
   ;
   void modeGroupClicked( int m );
+  void circleLayoutClicked();
 
   private:
 
@@ -28,10 +29,11 @@ class mainWindow : public QMainWindow
   QAction * openAct;
   QAction * saveAct;
   QAction * exitAct;
-  QToolButton * addVtxBut;
-  QToolButton * addEdgBut;
-  QToolButton * movVtxBut;
-  QToolButton * selVtxBut;
+  QToolButton * addVtxBtn;
+  QToolButton * addEdgBtn;
+  QToolButton * movVtxBtn;
+  QToolButton * selVtxBtn;
+  QToolButton * cirLayBtn;
   QButtonGroup * modeGroup;
   QToolBar * graphToolBar;
 
