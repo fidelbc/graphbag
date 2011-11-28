@@ -19,10 +19,12 @@
 #define GRAPH_VIEW_H
 
 #include <QGraphicsView>
+#include <QStack>
 
 class QMouseEvent;
 
 class Graph;
+class Vertex;
 
 class GraphView :
   public QGraphicsView
@@ -30,6 +32,8 @@ class GraphView :
 
  public:
   GraphView();
+
+  void init_grid( int x=-200, int y=-200, int w=400, int h=400, int dx=10, int dy=10 );
   
   void init_graph();
 
@@ -37,9 +41,9 @@ class GraphView :
   
   void mouseReleaseEvent ( QMouseEvent * event );
   
-  void contextMenuEvent ( QContextMenuEvent * event );
+  //  void contextMenuEvent ( QContextMenuEvent * event );
 
-  enum Mode { VERTEX_ADD, EDGE_ADD, MOVE, SELECT };
+  enum Mode { VTX_ADD, EDG_ADD, MOVE, SELECT };
 
   void setMode( Mode m );
   
@@ -48,6 +52,7 @@ private:
   Graph * g;
   bool move_mode;  
   Mode current_mode;
+  QStack<Vertex *> * selected_vxs;
 
 
 };
