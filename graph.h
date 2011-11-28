@@ -27,7 +27,7 @@ public:
 
   void add_vertex( Vertex * v );
 
-  void add_edge( Vertex * u, Vertex * v );
+  Edge * add_edge( Vertex * u, Vertex * v );
 
   void erase_vertex( Vertex * v );
 

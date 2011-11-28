@@ -25,12 +25,14 @@ class Vertex;
 class Edge: public QGraphicsLineItem{
 
  public:
-  Edge( Vertex * h, Vertex * t, QGraphicsItem * parent );
+  Edge( Vertex * h, Vertex * t, QGraphicsItem * parent=0 );
 
   void adjust();
 
   enum { Type = UserType + 2 };
-  
+
+  int type() const;
+
  private:
 
   Vertex * head;

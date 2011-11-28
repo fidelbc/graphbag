@@ -6,5 +6,6 @@
      <file>icons/add_vertex.png</file>
      <file>icons/add_edge.png</file>
      <file>icons/move_vertex.png</file>
+     <file>icons/sel_vertex.png</file>
  </qresource>
  </RCC>

@@ -23,7 +23,7 @@
 
 #include <QDebug>
 
-Edge::Edge( Vertex * t, Vertex * h, QGraphicsItem * parent = 0 )
+Edge::Edge( Vertex * t, Vertex * h, QGraphicsItem * parent )
   : QGraphicsLineItem( parent )
 {
   
@@ -58,3 +58,7 @@ void Edge::adjust()
 
 }
 
+int Edge::type() const
+{
+  return Type;
+}

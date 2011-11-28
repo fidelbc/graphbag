@@ -29,11 +29,11 @@ void Graph::add_vertex( Vertex * v ){
 
 }
 
-void Graph::add_edge( Vertex * u, Vertex * v ){
+Edge * Graph::add_edge( Vertex * u, Vertex * v ){
   
   if( u && v && (u != v))
-    new Edge( u, v, v->parentItem() );
-  
+    return new Edge( u, v );
+  return 0;
 }
 
 

@@ -35,7 +35,7 @@
 GraphView::GraphView(): QGraphicsView()
 {
   setRenderHint(QPainter::Antialiasing);
-  setDragMode(QGraphicsView::RubberBandDrag );
+
 
   QGraphicsScene * gscene=new QGraphicsScene( this );
     
@@ -44,13 +44,29 @@ GraphView::GraphView(): QGraphicsView()
   gscene->addLine(-10,0,10,0);
   gscene->addLine(0,10,0,-10);
 
+  init_grid();
+
   init_graph();
 
+  selected_vxs= new QStack<Vertex *>;
+
+}
+
+void GraphView::init_grid( int x, int y, int w, int h, int dx, int dy )
+{
+  QGraphicsScene * s=scene();
+
+  for( int ix= x; ix<= x+w; ix+=dx )
+    s->addLine( ix, y, ix, y+h, QPen(Qt::gray) );
+  for( int iy= y; iy<= y+h; iy+=dy )
+    s->addLine( x, iy, x+w, iy, QPen(Qt::gray) );
 }
 
 void GraphView::init_graph()
 {
   g=new Graph();
+
+  QGraphicsScene * s=scene();
     
   int n=12;
   double r=150;
@@ -59,7 +75,7 @@ void GraphView::init_graph()
   for( int i=0; i< n; i++ ){
     Vertex * v = new Vertex( 0.0, 0.0, 20.0 );
     vxs.append( v );
-    (this->scene())->addItem( v );
+    s->addItem( v );
   }
 
   double PI=3.1415926535;
@@ -71,8 +87,11 @@ void GraphView::init_graph()
   }
 
   for( int i=0; i<n; i++ ){
-    g->add_edge( vxs.at(i), vxs.at(mod(i+1,n) ) );
-    g->add_edge( vxs.at(i), vxs.at(mod(i-1,n) ) );
+    Edge * e;
+    e=g->add_edge( vxs.at(i), vxs.at(mod(i+1,n) ) );
+    s->addItem( e );
+    e=g->add_edge( vxs.at(i), vxs.at(mod(i-1,n) ) );
+    s->addItem( e );
   }
 
 }
@@ -80,56 +99,144 @@ void GraphView::init_graph()
 
 void GraphView::mousePressEvent ( QMouseEvent * event )
 {
+
+  Vertex * vx;
+  QGraphicsScene * s=scene();
   
-  qDebug() << "MPE in gv: forwarding event.";
+  if( event -> button() == Qt::LeftButton ){
+    switch( current_mode ){
+    case VTX_ADD:
+      vx = new Vertex( 0, 0, 20 );
+      vx->setPos( mapToScene(event->pos()) );
+      g->add_vertex( vx );
+      s->addItem( vx );
+      event->accept();
+      break;
+    case EDG_ADD:
+      vx=qgraphicsitem_cast<Vertex *>( itemAt( event->pos() ));
+      if( vx ){
+	QGraphicsView::mousePressEvent( event );  
+	if( selected_vxs->size() == 1 ){
+	  Vertex * u = selected_vxs->pop();
+	  if( u != vx ){
+	     Edge * e=g->add_edge( vx, u );
+	     s->addItem( e );
+	  }
+	  qDebug()<< "Vx selected: " << (vx->isSelected());
+	  vx->setSelected( false );
+	  qDebug()<< "Vx selected: " << (vx->isSelected());
+	}else if( selected_vxs->size() == 0 ){
+	  selected_vxs->push(vx);
+	}else{
+	  qDebug()<<"Did not expect this, clearin selection...";
+	  selected_vxs->clear();
+	}
+	
+      }
+      //event->accept();
+      break;
+    case MOVE:
+      QGraphicsView::mousePressEvent( event );  
+      break;
+    case SELECT:
+      QGraphicsView::mousePressEvent( event );  
+      break;
+    default:
+      qDebug() << "Nothing to do here!";
+      ;
+      
+    }
+  }
 
-  QGraphicsView::mousePressEvent( event );  
 
-  qDebug() << "MPE in gv: flow controll back!";
 
 }
 
 void GraphView::mouseReleaseEvent ( QMouseEvent * event )
 {
-  
-  qDebug() << "MRE in gv: forwarding event.";
-
   QGraphicsView::mouseReleaseEvent( event );  
 
-  qDebug() << "MRE in gv: flow controll back!";
-
-}
-
-void GraphView::contextMenuEvent(QContextMenuEvent *event)
-{
-  QMenu menu;
-  QAction * circleLayout = menu.addAction( "Circle Layout" );
-  QAction * moveMode = new QAction("Move", &menu);
-
-  moveMode->setCheckable( true );
-  moveMode->setChecked( move_mode );
-  menu.addAction( moveMode );
-       
-  QAction *selectedAction = menu.exec( QCursor::pos() );// event->pos() );
-
-  if( selectedAction == circleLayout ){
-
-    g->circle_layout();
-
-  }else if( selectedAction == moveMode ){
-
-    move_mode = !move_mode;
-    g->set_movable( move_mode );
-    g->set_selectable( !move_mode );
-       
+  Vertex * vx;
+  if( event -> button() == Qt::LeftButton ){
+    switch( current_mode ){
+    case VTX_ADD:
+      break;
+    case EDG_ADD:
+      vx=qgraphicsitem_cast<Vertex *>( itemAt( event->pos() ));
+      if( vx ){
+	qDebug()<< "Vx selected: " << (vx->isSelected());
+	if( selected_vxs->size() == 0 )
+	  vx->setSelected(false );
+	qDebug()<< "Vx selected: " << (vx->isSelected());
+      }
+      //event->accept();
+      break;
+    case MOVE:
+      break;
+    case SELECT:
+      break;
+    default:
+      ;
+      
+    }
   }
+
+  //  qDebug() << "MRE in gv: flow controll back!";
+
 }
+
+// void GraphView::contextMenuEvent(QContextMenuEvent *event)
+// {
+//   Q_UNUSED( event );
+
+//   QMenu menu;
+//   QAction * circleLayout = menu.addAction( "Circle Layout" );
+//   QAction * moveMode = new QAction("Move", &menu);
+
+//   moveMode->setCheckable( true );
+//   moveMode->setChecked( move_mode );
+//   menu.addAction( moveMode );
+       
+//   QAction *selectedAction = menu.exec( QCursor::pos() );
+
+//   if( selectedAction == circleLayout ){
+
+//     g->circle_layout();
+
+//   }else if( selectedAction == moveMode ){
+//     setMode( MOVE );       
+//   }
+// }
 
 void GraphView::setMode( Mode m ){
 
-  current_mode = m;
+  switch( m ){
+  case VTX_ADD:
+    g->set_movable(false);
+    g->set_selectable(false);
+    setDragMode(QGraphicsView::NoDrag);
+    break;
+  case EDG_ADD:
+    g->set_movable(false);
+    g->set_selectable(true);
+    setDragMode(QGraphicsView::NoDrag);
+    break;
+  case MOVE:
+    g->set_movable(true);
+    g->set_selectable(false);
+    setDragMode(QGraphicsView::NoDrag);
+    break;
+  case SELECT:
+    g->set_movable(false);
+    g->set_selectable(true);
+    setDragMode(QGraphicsView::RubberBandDrag );
+    break;
+  default:
+    ;
+    
+  }
   
-  qDebug() << "Mode set to: " << m;
-
+  selected_vxs->clear();
+  current_mode = m;
 }
 
